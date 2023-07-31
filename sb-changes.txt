@@ -1,0 +1,4 @@
+Changes from upstream:
+
+- Store address components on field (not just the templated string)
+- More flexible i18n construction

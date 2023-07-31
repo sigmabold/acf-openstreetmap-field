@@ -599,47 +599,56 @@
 			// add an extra control panel region for out search
  			this.map._controlCorners['above'] = $above.get(0);
 
- 			this.geocoder = L.Control.geocoder({
- 				collapsed: false,
- 				position:'above',
- 				placeholder:i18n.search,
- 				errorMessage:i18n.nothing_found,
- 				showResultIcons:true,
- 				suggestMinLength:3,
- 				suggestTimeout:250,
- 				queryMinLength:3,
- 				defaultMarkGeocode:false,
+			var components = {
+				office:'',
+
+				building:'',
+				road:'',
+				house_number:'',
+
+				postcode:'',
+				city:'',
+				town:'',
+				village:'',
+				hamlet:'',
+				suburb:'',
+
+				state:'',
+				county:'',
+				country:'',
+				country_code:'',
+			};
+
+			var addressToLabel = (function () {
+				var templateConfig = {
+					interpolate: /\{(.+?)\}/g
+				};
+				var templates = (i18n.address_format || []).map( function (chunk) {
+					return _.template( chunk, templateConfig )
+				});
+
+				return function (addr) {
+					var ctx = _.defaults(addr, components);
+					return templates
+						.map( function (tpml) { return tpml(ctx).replace('/\s+/g', ' ').trim(); } )
+						.filter( function (el) { return el !== ''; })
+						.join(', ')
+				};
+			})();
+
+			this.geocoder = L.Control.geocoder({
+				collapsed: false,
+				position:'above',
+				placeholder:i18n.search,
+				errorMessage:i18n.nothing_found,
+				showResultIcons:true,
+				suggestMinLength:3,
+				suggestTimeout:250,
+				queryMinLength:3,
+				defaultMarkGeocode:false,
 				geocoder:L.Control.Geocoder.nominatim({
 					htmlTemplate: function(result) {
-						var parts = [],
-							templateConfig = {
-								interpolate: /\{(.+?)\}/g
-							},
-							addr = _.defaults( result.address, {
-								building:'',
-								road:'',
-								house_number:'',
-
-								postcode:'',
-								city:'',
-								town:'',
-								village:'',
-								hamlet:'',
-
-								state:'',
-								country:'',
-							} );
-
-						parts.push( _.template( i18n.address_format.street, templateConfig )( addr ) );
-
-						parts.push( _.template( i18n.address_format.city, templateConfig )( addr ) );
-
-						parts.push( _.template( i18n.address_format.country, templateConfig )( addr ) );
-
-						return parts
-							.map( function(el) { return el.replace(/\s+/g,' ').trim() } )
-							.filter( function(el) { return el !== '' } )
-							.join(', ')
+						return addressToLabel( result.address );
 					}
 				})
  			})
@@ -655,6 +664,7 @@
  						lat: latlng.lat,
  						lng: latlng.lng,
 						geocode: [],
+						props: _.defaults(e.geocode && e.geocode.properties && e.geocode.properties.address ? e.geocode.properties.address : {}, components),
  					},
  					model,
 					marker,

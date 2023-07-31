@@ -124,12 +124,15 @@ class Core extends Plugin {
 				'fit_markers_in_view'
 				 				=> __( 'Fit markers into view', 'acf-openstreetmap-field' ),
 				'address_format'	=> [
-					/* translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
-					'street'	=> __( '{building} {road} {house_number}', 'acf-openstreetmap-field' ),
-					/* translators: address format for marker labels (city level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
-					'city'		=> __( '{postcode} {city} {town} {village} {hamlet}', 'acf-openstreetmap-field' ),
-					/* translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
-					'country'	=> __( '{state} {country}', 'acf-openstreetmap-field' ),
+					/* translators: address format for marker labels. Available placeholders:
+						{office} {building} {road} {house_number} {postcode}
+						{city} {town} {village} {hamlet} {suburb} {state} {county} {country} {country_code}
+
+						elements of the list will be joined with `, `
+					*/
+					__( '{building} {road} {house_number}', 'acf-openstreetmap-field' ),
+					__( '{postcode} {city} {town} {village} {hamlet}', 'acf-openstreetmap-field' ),
+					__( '{state} {country}', 'acf-openstreetmap-field' ),
 				]
 			],
 		]);
