@@ -1,3 +1,6 @@
+# Bundled asset
+acf-openstreetmap-field*.zip
+
 # Unit tests
 /tmp
 /tests/bin/tmp
